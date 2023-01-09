@@ -4,6 +4,7 @@ import com.example.sherlock_chan_car_rental_service.domain.Address;
 import com.example.sherlock_chan_car_rental_service.domain.Company;
 import com.example.sherlock_chan_car_rental_service.dto.CompanyCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.CompanyDto;
+import com.example.sherlock_chan_car_rental_service.dto.CompanyUpdateDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,5 +32,15 @@ public class CompanyMapper {
         address.setPostcode(companyCreateDto.getAddressDto().getPostcode());
         company.setAddress(address);
         return company;
+    }
+
+    public Address companyUpdateDtoToAddress(CompanyUpdateDto companyUpdateDto){
+        Address address = new Address();
+        address.setCity(companyUpdateDto.getAddressDto().getCity());
+        address.setCountry(companyUpdateDto.getAddressDto().getCountry());
+        address.setPostcode(companyUpdateDto.getAddressDto().getPostcode());
+        address.setStreet(companyUpdateDto.getAddressDto().getStreet());
+
+        return address;
     }
 }

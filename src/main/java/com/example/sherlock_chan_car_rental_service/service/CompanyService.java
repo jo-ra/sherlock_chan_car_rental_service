@@ -1,5 +1,6 @@
 package com.example.sherlock_chan_car_rental_service.service;
 
+import com.example.sherlock_chan_car_rental_service.dto.CompanyCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.CompanyDto;
 import com.example.sherlock_chan_car_rental_service.dto.CompanyUpdateDto;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,7 @@ public interface CompanyService {
     Page<CompanyDto> findAll(Pageable pageable);
 
     CompanyDto updateCompany(Long id, CompanyUpdateDto companyUpdateDto);
-
+    CompanyDto createCompany(CompanyCreateDto companyCreateDto);
 
 
 }

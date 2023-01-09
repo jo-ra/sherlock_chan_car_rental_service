@@ -17,6 +17,7 @@ public class Company {
 
     @Embedded
     private Address address;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", orphanRemoval = true)
     private List<Vehicle> vehicles = new ArrayList<>();
 
@@ -26,8 +27,6 @@ public class Company {
     public Company(){
 
     }
-
-
 
     public Address getAddress() {
         return address;

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 
 public class ScheduleServiceImplementation implements ScheduleService {
-
     @Override
     public Page<ScheduleDto> findAll(Pageable pageable) {
         return null;
