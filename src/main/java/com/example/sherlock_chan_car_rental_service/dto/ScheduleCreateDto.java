@@ -3,7 +3,7 @@ package com.example.sherlock_chan_car_rental_service.dto;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-public class CreateScheduleDto {
+public class ScheduleCreateDto {
    @NotNull
     private LocalDate starting_date;
    @NotNull

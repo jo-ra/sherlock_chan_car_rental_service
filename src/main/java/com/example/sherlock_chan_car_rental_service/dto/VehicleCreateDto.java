@@ -1,4 +1,4 @@
 package com.example.sherlock_chan_car_rental_service.dto;
 
-public class CreateVehicleDto {
+public class VehicleCreateDto {
 }
