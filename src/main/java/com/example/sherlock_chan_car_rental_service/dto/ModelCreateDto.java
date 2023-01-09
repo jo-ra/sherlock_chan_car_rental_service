@@ -3,16 +3,20 @@ package com.example.sherlock_chan_car_rental_service.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class ModelDto {
+public class ModelCreateDto {
 
     private Long id;
-
+    @NotEmpty(message = "Text cant be empty")
     private String name;
-
+    @NotNull
     private Float price;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -21,10 +25,6 @@ public class ModelDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Float getPrice() {

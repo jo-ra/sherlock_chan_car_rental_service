@@ -1,24 +1,13 @@
 package com.example.sherlock_chan_car_rental_service.dto;
 
-import com.example.sherlock_chan_car_rental_service.domain.Company;
-
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-public class ScheduleDto {
-
-    private Long id;
-
+public class CreateScheduleDto {
+   @NotNull
     private LocalDate starting_date;
+   @NotNull
     private LocalDate ending_date;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public LocalDate getStarting_date() {
         return starting_date;
