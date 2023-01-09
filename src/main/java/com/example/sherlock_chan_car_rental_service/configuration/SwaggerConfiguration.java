@@ -1,6 +1,6 @@
 package com.example.sherlock_chan_car_rental_service.configuration;
 
-import com.chan.sherlock.controller.UserController;
+import com.example.sherlock_chan_car_rental_service.controller.CompanyController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -16,19 +16,19 @@ import java.util.Collections;
 @EnableSwagger2
 public class SwaggerConfiguration {
 
-//    @Bean
-//    public Docket api() {
-//        return new Docket(DocumentationType.SWAGGER_2)
-//                .useDefaultResponseMessages(false)
-//                .select().apis(RequestHandlerSelectors.basePackage(UserController.class.getPackage().getName()))
-//                .build()
-//                .apiInfo(metaData());
-//    }
-//
-//    private ApiInfo metaData() {
-//        return new ApiInfo("API", "API swagger definition", "1.0.0"
-//                , "Terms of service", new Contact("Jovana Radakovic", "", "jradakovic3820rn@raf.rs")
-//                , "", "", Collections.emptyList());
-//    }
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .useDefaultResponseMessages(false)
+                .select().apis(RequestHandlerSelectors.basePackage(CompanyController.class.getPackage().getName()))
+                .build()
+                .apiInfo(metaData());
+    }
+
+    private ApiInfo metaData() {
+        return new ApiInfo("API", "API swagger definition", "1.0.0"
+                , "Terms of service", new Contact("Jovana Radakovic", "", "jradakovic3820rn@raf.rs")
+                , "", "", Collections.emptyList());
+    }
 
 }
