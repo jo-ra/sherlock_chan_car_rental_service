@@ -14,8 +14,10 @@ public class Model {
     private String name;
 
     private Float price;
+
     @OneToOne(mappedBy = "model", cascade = CascadeType.ALL)
     private Vehicle vehicle;
+
     public Model(){
 
     }
@@ -25,6 +27,7 @@ public class Model {
         this.name=name;
         this.price=price;
     }
+
     public Long getId() {
         return id;
     }

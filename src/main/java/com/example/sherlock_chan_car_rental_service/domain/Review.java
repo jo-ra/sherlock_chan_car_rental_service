@@ -15,9 +15,10 @@ public class Review {
     @ManyToOne
     private Company company;
 
-    private Review(){
+    public Review(){
 
     }
+
     public Review(Long id, Integer star, String comment) {
         this.id = id;
         this.star = star;

@@ -57,5 +57,11 @@ public class Schedule {
         this.company = company;
     }
 
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
 
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
 }

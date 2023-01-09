@@ -1,9 +1,12 @@
 package com.example.sherlock_chan_car_rental_service.mapper;
 
 import com.example.sherlock_chan_car_rental_service.domain.Type;
+import com.example.sherlock_chan_car_rental_service.domain.Vehicle;
 import com.example.sherlock_chan_car_rental_service.dto.TypeCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.TypeDto;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class TypeMapper {
@@ -15,9 +18,10 @@ public class TypeMapper {
         return typeDto;
     }
 
-    public Type typeCreateDtoToType(TypeCreateDto typeCreateDto){
+    public Type typeCreateDtoToType(TypeCreateDto typeCreateDto, List<Vehicle> vehicles){
         Type type=new Type();
         type.setName(typeCreateDto.getName());
+        type.setVehicles(vehicles);
         return type;
     }
 }
