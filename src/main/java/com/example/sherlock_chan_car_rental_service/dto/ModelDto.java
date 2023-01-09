@@ -13,9 +13,6 @@ public class ModelDto {
 
     private Float price;
 
-    @JsonProperty("vehicle")
-    private VehicleDto vehicleDto;
-
     public Long getId() {
         return id;
     }
@@ -40,11 +37,4 @@ public class ModelDto {
         this.price = price;
     }
 
-    public VehicleDto getVehicleDto() {
-        return vehicleDto;
-    }
-
-    public void setVehicleDto(VehicleDto vehicleDto) {
-        this.vehicleDto = vehicleDto;
-    }
 }

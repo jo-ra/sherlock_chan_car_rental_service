@@ -13,9 +13,6 @@ public class ModelCreateDto {
     @NotNull
     private Float price;
 
-    @JsonProperty("vehicle")
-    private Long vehicle_id;
-
     public Long getId() {
         return id;
     }
@@ -40,11 +37,4 @@ public class ModelCreateDto {
         this.price = price;
     }
 
-    public Long getVehicle_id() {
-        return vehicle_id;
-    }
-
-    public void setVehicle_id(Long vehicle_id) {
-        this.vehicle_id = vehicle_id;
-    }
 }

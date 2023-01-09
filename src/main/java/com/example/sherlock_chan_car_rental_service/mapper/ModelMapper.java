@@ -10,14 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ModelMapper {
 
-    private VehicleMapper vehicleMapper;
-    private VehicleRepository vehicleRepository;
-
-    public ModelMapper(VehicleMapper vehicleMapper, VehicleRepository vehicleRepository){
-        this.vehicleMapper = vehicleMapper;
-        this.vehicleRepository = vehicleRepository;
-    }
-
     public ModelDto modelToModelDto(Model model){
         ModelDto modelDto=new ModelDto();
         modelDto.setId(model.getId());
@@ -31,10 +23,6 @@ public class ModelMapper {
         model.setId(modelCreateDto.getId());
         model.setName(modelCreateDto.getName());
         model.setPrice(modelCreateDto.getPrice());
-
-        model.setVehicle(vehicleRepository
-                .findById(modelCreateDto.getVehicle_id())
-                .orElseThrow(() -> new NotFoundException(String.format("Vehicle with provided id %d has not been found", modelCreateDto.getVehicle_id()))));
 
         return model;
     }

@@ -15,8 +15,6 @@ public class Model {
 
     private Float price;
 
-    @OneToOne(mappedBy = "model", cascade = CascadeType.ALL)
-    private Vehicle vehicle;
 
     public Model(){
 
@@ -52,11 +50,4 @@ public class Model {
         this.price = price;
     }
 
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
 }

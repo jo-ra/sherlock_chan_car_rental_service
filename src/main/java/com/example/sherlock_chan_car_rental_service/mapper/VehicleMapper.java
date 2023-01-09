@@ -6,7 +6,9 @@ import com.example.sherlock_chan_car_rental_service.dto.VehicleDto;
 import com.example.sherlock_chan_car_rental_service.exception.NotFoundException;
 import com.example.sherlock_chan_car_rental_service.repository.ModelRepository;
 import com.example.sherlock_chan_car_rental_service.repository.TypeRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class VehicleMapper {
 
     private ModelRepository modelRepository;
