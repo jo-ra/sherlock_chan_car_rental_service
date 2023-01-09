@@ -1,6 +1,6 @@
-package com.example.sherlock_chan_car_rental_service.secutiry.service.impl;
+package com.example.sherlock_chan_car_rental_service.security.service.impl;
 
-import com.example.sherlock_chan_car_rental_service.secutiry.service.TokenService;
+import com.example.sherlock_chan_car_rental_service.security.service.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

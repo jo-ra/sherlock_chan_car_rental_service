@@ -1,4 +1,4 @@
-package com.example.sherlock_chan_car_rental_service.secutiry.service;
+package com.example.sherlock_chan_car_rental_service.security.service;
 
 import io.jsonwebtoken.Claims;
 

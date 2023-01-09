@@ -1,7 +1,7 @@
-package com.example.sherlock_chan_car_rental_service.secutiry;
+package com.example.sherlock_chan_car_rental_service.security;
 
 
-import com.example.sherlock_chan_car_rental_service.secutiry.service.TokenService;
+import com.example.sherlock_chan_car_rental_service.security.service.TokenService;
 import io.jsonwebtoken.Claims;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

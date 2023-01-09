@@ -1,4 +1,4 @@
-package com.example.sherlock_chan_car_rental_service.secutiry;
+package com.example.sherlock_chan_car_rental_service.security;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
