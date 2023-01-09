@@ -57,7 +57,7 @@ public class SecurityAspect {
         //Check user role and proceed if user has appropriate role for specified route
         CheckSecurity checkSecurity = method.getAnnotation(CheckSecurity.class);
         String type = claims.get("type", String.class);
-        if (Arrays.asList(checkSecurity.roles()).contains(type)) {
+        if (Arrays.asList(checkSecurity.userTypes()).contains(type)) {
             return joinPoint.proceed();
         }
         //Return FORBIDDEN if user has't appropriate role for specified route
