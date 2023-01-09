@@ -12,5 +12,6 @@ public interface CompanyService {
     CompanyDto updateCompany(Long id, CompanyUpdateDto companyUpdateDto);
 
 
+
 }
 
