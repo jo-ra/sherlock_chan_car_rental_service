@@ -18,10 +18,10 @@ public class TypeMapper {
         return typeDto;
     }
 
-    public Type typeCreateDtoToType(TypeCreateDto typeCreateDto, List<Vehicle> vehicles){
+    public Type typeCreateDtoToType(TypeCreateDto typeCreateDto){
         Type type=new Type();
         type.setName(typeCreateDto.getName());
-        type.setVehicles(vehicles);
+//        type.setVehicles(vehicles);
         return type;
     }
 }

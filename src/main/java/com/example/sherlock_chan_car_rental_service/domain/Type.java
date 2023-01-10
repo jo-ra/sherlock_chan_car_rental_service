@@ -12,9 +12,6 @@ public class Type {
     private Long id;
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "type", orphanRemoval = true)
-    private List<Vehicle> vehicles= new ArrayList<>();
-
     public Type(){
 
     }
@@ -29,14 +26,6 @@ public class Type {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public List<Vehicle> getVehicles() {
-        return vehicles;
-    }
-
-    public void setVehicles(List<Vehicle> vehicles) {
-        this.vehicles = vehicles;
     }
 
     public String getName() {
