@@ -13,7 +13,7 @@ public class Vehicle {
     private Company company;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehicle",orphanRemoval = true)
-    private List<Schedule> schedules=new ArrayList<>();
+    private List<Reservation> reservations =new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="model_id")

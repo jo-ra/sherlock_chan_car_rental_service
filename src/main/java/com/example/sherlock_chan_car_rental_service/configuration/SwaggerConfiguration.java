@@ -1,6 +1,6 @@
 package com.example.sherlock_chan_car_rental_service.configuration;
 
-import com.example.sherlock_chan_car_rental_service.controller.CompanyController;
+import com.example.sherlock_chan_car_rental_service.controller.ReservationController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -20,7 +20,7 @@ public class SwaggerConfiguration {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(false)
-                .select().apis(RequestHandlerSelectors.basePackage(CompanyController.class.getPackage().getName()))
+                .select().apis(RequestHandlerSelectors.basePackage(ReservationController.class.getPackage().getName()))
                 .build()
                 .apiInfo(metaData());
     }

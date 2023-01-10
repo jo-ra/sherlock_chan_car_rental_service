@@ -1,16 +1,11 @@
 package com.example.sherlock_chan_car_rental_service.domain;
 
-import org.checkerframework.checker.units.qual.C;
-
 import javax.persistence.*;
-import java.sql.Time;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name="SCHEDULE")
-public class Schedule {
+public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
