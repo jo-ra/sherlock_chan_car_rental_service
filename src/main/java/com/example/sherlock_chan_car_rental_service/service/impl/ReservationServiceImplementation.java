@@ -31,7 +31,7 @@ public class ReservationServiceImplementation implements ReservationService {
     public Page<ReservationDto> findAll(Pageable pageable) {
         return (Page<ReservationDto>) reservationRepository
                 .findAll(pageable)
-                .map(reservationMapper::scheduleToScheduleDto);
+                .map(reservationMapper::reservationToReservationDto);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ReservationServiceImplementation implements ReservationService {
         return  reservationRepository
                 .findAll().stream()
                 .filter(reservation -> reservation.getCompany().getAddress().getCity().equals(city_name))
-                .map(reservationMapper::scheduleToScheduleDto)
+                .map(reservationMapper::reservationToReservationDto)
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +50,7 @@ public class ReservationServiceImplementation implements ReservationService {
         return reservationRepository
                 .findAll().stream()
                 .filter(reservation -> reservation.getCompany().getName().equals(company_name))
-                .map(reservationMapper::scheduleToScheduleDto)
+                .map(reservationMapper::reservationToReservationDto)
                 .collect(Collectors.toList());
 
     }
@@ -61,7 +61,7 @@ public class ReservationServiceImplementation implements ReservationService {
                 .filter(reservation -> ( (start_date.isAfter(reservation.getStarting_date()) ||
                         start_date.isEqual(reservation.getStarting_date()))
                 && (end_date.isEqual(reservation.getEnding_date()) || (end_date).isBefore(reservation.getEnding_date()))))
-                .map(reservationMapper::scheduleToScheduleDto)
+                .map(reservationMapper::reservationToReservationDto)
                 .collect(Collectors.toList());
 
     }
