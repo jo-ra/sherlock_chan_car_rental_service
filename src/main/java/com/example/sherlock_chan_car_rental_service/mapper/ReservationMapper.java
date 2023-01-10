@@ -24,11 +24,13 @@ public class ReservationMapper {
         this.vehicleRepository = vehicleRepository;
     }
 
-    public ReservationDto scheduleToScheduleDto(Reservation reservation){
+    public ReservationDto reservationToReservationDto(Reservation reservation){
         ReservationDto reservationDto = new ReservationDto();
         reservationDto.setId(reservation.getId());
         reservationDto.setVehicleDto(vehicleMapper.vehicleToVehicleDto(reservation.getVehicle()));
         reservationDto.setCompanyDto(companyMapper.companyToCompanyDto(reservation.getCompany()));
+        reservationDto.setIs_active(reservation.getIs_active());
+        reservationDto.setUser_id(reservation.getUser_id());
 
         reservationDto.setStarting_date(reservation.getStarting_date());
         reservationDto.setEnding_date(reservation.getEnding_date());
@@ -36,7 +38,7 @@ public class ReservationMapper {
         return reservationDto;
     }
 
-    public Reservation scheduleCreateDtoToSchedule(ReservationCreateDto reservationCreateDto){
+    public Reservation reservationCreateDtoToReservation(ReservationCreateDto reservationCreateDto){
         Reservation reservation = new Reservation();
 
         reservation.setEnding_date(reservationCreateDto.getEnding_date());
@@ -53,6 +55,9 @@ public class ReservationMapper {
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Vehicle with provided id %d has not been found", reservationCreateDto.getVehicle_id())
                 )));
+
+        reservation.setIs_active(reservationCreateDto.getIs_active());
+        reservation.setUser_id(reservationCreateDto.getUser_id());
 
         return reservation;
     }

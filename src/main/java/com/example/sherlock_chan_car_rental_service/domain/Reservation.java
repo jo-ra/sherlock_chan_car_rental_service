@@ -20,6 +20,10 @@ public class Reservation {
     @OneToOne(cascade = CascadeType.ALL)
     private Company company;
 
+    private Long user_id;
+
+    private Integer is_active;
+
     public Long getId() {
         return id;
     }
@@ -58,5 +62,21 @@ public class Reservation {
 
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
+    }
+
+    public Integer getIs_active() {
+        return is_active;
+    }
+
+    public void setIs_active(Integer is_active) {
+        this.is_active = is_active;
+    }
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 }
