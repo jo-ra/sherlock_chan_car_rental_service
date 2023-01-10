@@ -17,6 +17,10 @@ public class ReservationDto {
     @JsonProperty("vehicle")
     private VehicleDto vehicleDto;
 
+    private Integer is_active;
+
+    private Long user_id;
+
     public Long getId() {
         return id;
     }
@@ -55,5 +59,21 @@ public class ReservationDto {
 
     public void setVehicleDto(VehicleDto vehicleDto) {
         this.vehicleDto = vehicleDto;
+    }
+
+    public Integer getIs_active() {
+        return is_active;
+    }
+
+    public void setIs_active(Integer is_active) {
+        this.is_active = is_active;
+    }
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 }
