@@ -33,9 +33,7 @@ public class ModelServiceImplementation implements ModelService {
         Model model=modelMapper.modelCreateDtoToModel(modelCreateDto);
         modelRepository.save(model);
         return modelMapper.modelToModelDto(model);
-
     }
-
 
     @Override
     public ModelDto updateModel(Long id, ModelUpdateDto modelUpdateDto) {
@@ -44,6 +42,11 @@ public class ModelServiceImplementation implements ModelService {
         model.setName(modelUpdateDto.getName());
         model.setPrice(modelUpdateDto.getPrice());
         return modelMapper.modelToModelDto(modelRepository.save(model));
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        modelRepository.deleteById(id);
     }
 
 }

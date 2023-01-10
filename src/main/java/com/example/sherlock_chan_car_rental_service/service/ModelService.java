@@ -14,4 +14,6 @@ public interface ModelService {
 
     ModelDto updateModel(Long id, ModelUpdateDto modelUpdateDto);
 
+    void deleteById(Long id);
+
 }
