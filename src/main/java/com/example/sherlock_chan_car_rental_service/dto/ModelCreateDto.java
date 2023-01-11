@@ -11,7 +11,7 @@ public class ModelCreateDto {
     @NotEmpty(message = "Text cant be empty")
     private String name;
     @NotNull
-    private Float price;
+    private Double price;
 
     public Long getId() {
         return id;
@@ -29,11 +29,11 @@ public class ModelCreateDto {
         this.name = name;
     }
 
-    public Float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

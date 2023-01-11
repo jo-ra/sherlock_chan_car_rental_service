@@ -5,7 +5,7 @@ public class ModelUpdateDto {
 
     private String name;
 
-    private Float price;
+    private Double price;
 
     public Long getId() {
         return id;
@@ -23,11 +23,11 @@ public class ModelUpdateDto {
         this.name = name;
     }
 
-    public Float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 }

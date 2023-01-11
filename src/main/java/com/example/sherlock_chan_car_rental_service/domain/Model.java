@@ -13,14 +13,14 @@ public class Model {
 
     private String name;
 
-    private Float price;
+    private Double price;
 
 
     public Model(){
 
     }
 
-    public Model(Long id, String name,Float price){
+    public Model(Long id, String name,Double price){
         this.id=id;
         this.name=name;
         this.price=price;
@@ -42,11 +42,11 @@ public class Model {
         this.name = name;
     }
 
-    public Float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

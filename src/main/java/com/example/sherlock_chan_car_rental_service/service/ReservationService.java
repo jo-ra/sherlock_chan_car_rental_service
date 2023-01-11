@@ -10,9 +10,9 @@ import java.util.List;
 public interface ReservationService {
 
     Page<ReservationDto> findAll(Pageable pageable);
-    List<ReservationDto> findByCity(String city_name);
-    List<ReservationDto> findByCompany(String company_name);
-
-    List<ReservationDto> findByDate(LocalDate start_date, LocalDate end_date);
+    List<ReservationDto> findByCity(String city_name, boolean sort_by_price);
+    List<ReservationDto> findByCompany(String company_name, boolean sort_by_price);
+    List<ReservationDto> findByDate(LocalDate start_date, LocalDate end_date, boolean sort_by_price);
+    List<ReservationDto> filterByAll(String vehicle_type, String city_name, String company_name, LocalDate start_date, LocalDate end_date, boolean sort_by_price);
 
 }
