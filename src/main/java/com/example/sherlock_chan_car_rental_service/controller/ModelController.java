@@ -37,24 +37,24 @@ public class ModelController {
         return new ResponseEntity<>(modelService.findAll(pageable), HttpStatus.OK);
     }
 
-    @GetMapping("listById/{id}")
+    @GetMapping("/listById/{id}")
     public ResponseEntity<ModelDto> findById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(modelService.findById(id), HttpStatus.OK);
     }
-    @GetMapping("listByName/{id}")
+    @GetMapping("/listByName/{id}")
     public ResponseEntity<String> findModelNameById(@PathVariable("id") Long id){
         return new ResponseEntity<>(modelService.findModelNameById(id),HttpStatus.OK);
     }
-    @PostMapping
+    @PostMapping("/createModel")
     public ResponseEntity<ModelDto> createModel(@RequestBody @Valid ModelCreateDto modelCreateDto) {
         return new ResponseEntity<>(modelService.createModel(modelCreateDto), HttpStatus.CREATED);
     }
-    @PutMapping("put/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<ModelDto> updateModel(@PathVariable("id") Long id,
                                               @RequestBody @Valid ModelUpdateDto modelUpdateDto) {
         return new ResponseEntity<>(modelService.updateModel(id,modelUpdateDto), HttpStatus.OK);
     }
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     void delete(@PathVariable("id") Long id) {
         modelService.deleteById(id);
 

@@ -39,27 +39,27 @@ public class TypeController {
         return new ResponseEntity<>(typeService.findAll(pageable), HttpStatus.OK);
     }
 
-    @GetMapping("listById/{id}")
+    @GetMapping("/listById/{id}")
     public ResponseEntity<TypeDto> findById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(typeService.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("listByName/{id}")
+    @GetMapping("/listByName/{id}")
     public ResponseEntity<String> findTypeNameById(@PathVariable("id") Long id){
         return new ResponseEntity<>(typeService.findTypeNameById(id),HttpStatus.OK);
     }
-    @PostMapping
+    @PostMapping("/createType")
     public ResponseEntity<TypeDto> createType(@RequestBody @Valid TypeCreateDto typeCreateDto) {
         return new ResponseEntity<>(typeService.createType(typeCreateDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("put/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<TypeDto> updateType(@PathVariable("id") Long id,
                                               @RequestBody @Valid TypeUpdateDto typeUpdateDto) {
         return new ResponseEntity<>(typeService.updateType(id, typeUpdateDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     void delete(@PathVariable("id") Long id) {
         typeService.deleteById(id);
 

@@ -9,8 +9,6 @@ public class ReviewUpdateDto {
 
     private Integer star;
 
-    @JsonProperty("company")
-    private CompanyDto companyDto;
     public Long getId() {
         return id;
     }
@@ -35,11 +33,4 @@ public class ReviewUpdateDto {
         this.star = star;
     }
 
-    public CompanyDto getCompanyDto() {
-        return companyDto;
-    }
-
-    public void setCompanyDto(CompanyDto companyDto) {
-        this.companyDto = companyDto;
-    }
 }

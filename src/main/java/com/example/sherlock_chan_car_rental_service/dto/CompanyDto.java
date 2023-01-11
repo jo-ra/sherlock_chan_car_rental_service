@@ -14,6 +14,8 @@ public class CompanyDto {
 
     private Integer numVehicles;
 
+    private Double rank;
+
     public Long getId() {
         return id;
     }

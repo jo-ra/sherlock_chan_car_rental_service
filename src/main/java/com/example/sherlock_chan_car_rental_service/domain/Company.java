@@ -15,6 +15,7 @@ public class Company {
     private String description;
     private Integer numVehicls;
 
+    private Double rank;
     @Embedded
     private Address address;
 
@@ -68,5 +69,20 @@ public class Company {
         this.numVehicls = numVehicls;
     }
 
+    public Double getRank() {
+        return rank;
+    }
 
+    public void setRank(Double rank) {
+        this.rank = rank;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if((obj!=null) && obj instanceof Company){
+            Company company=(Company) obj;
+            return this.getName().equals(company.getName());
+        }
+        return false;
+    }
 }
