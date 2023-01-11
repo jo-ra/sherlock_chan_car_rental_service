@@ -62,7 +62,7 @@ public class TypeController {
     @DeleteMapping("delete/{id}")
     void delete(@PathVariable("id") Long id) {
         typeService.deleteById(id);
-        System.out.printf("ok delete");
+
     }
 
 }
