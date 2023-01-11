@@ -1,10 +1,15 @@
 package com.example.sherlock_chan_car_rental_service.service.impl;
 
 import com.example.sherlock_chan_car_rental_service.domain.Reservation;
+import com.example.sherlock_chan_car_rental_service.domain.Vehicle;
+import com.example.sherlock_chan_car_rental_service.dto.ReservationCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.ReservationDto;
+import com.example.sherlock_chan_car_rental_service.mapper.ModelMapper;
 import com.example.sherlock_chan_car_rental_service.mapper.ReservationMapper;
+import com.example.sherlock_chan_car_rental_service.mapper.VehicleMapper;
 import com.example.sherlock_chan_car_rental_service.repository.CompanyRepository;
 import com.example.sherlock_chan_car_rental_service.repository.ReservationRepository;
+import com.example.sherlock_chan_car_rental_service.repository.VehicleRepository;
 import com.example.sherlock_chan_car_rental_service.service.ReservationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +27,17 @@ import java.util.stream.Collectors;
 public class ReservationServiceImplementation implements ReservationService {
 
     private ReservationMapper reservationMapper;
+
     private ReservationRepository reservationRepository;
     private CompanyRepository companyRepository;
+    private VehicleRepository vehicleRepository;
 
-    public ReservationServiceImplementation(ReservationMapper reservationMapper, CompanyRepository companyRepository, ReservationRepository reservationRepository){
+    public ReservationServiceImplementation(ReservationMapper reservationMapper, CompanyRepository companyRepository,
+                                            ReservationRepository reservationRepository, VehicleRepository vehicleRepository){
         this.reservationMapper = reservationMapper;
         this.companyRepository=companyRepository;
         this.reservationRepository = reservationRepository;
+        this.vehicleRepository = vehicleRepository;
     }
 
     @Override
@@ -135,5 +144,16 @@ public class ReservationServiceImplementation implements ReservationService {
         }
 
         return resultList;
+    }
+
+    @Override
+    public ReservationDto createReservationByType(ReservationCreateDto reservationCreateDto, Long typeId) {
+        // Izvucem vehicle po company_id i po type_id
+        return null;
+    }
+
+    @Override
+    public ReservationDto createReservationByModel(ReservationCreateDto reservationCreateDto, Long modelId) {
+        return null;
     }
 }
