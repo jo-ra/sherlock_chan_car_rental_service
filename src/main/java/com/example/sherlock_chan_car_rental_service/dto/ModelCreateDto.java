@@ -7,19 +7,10 @@ import javax.validation.constraints.NotNull;
 
 public class ModelCreateDto {
 
-    private Long id;
     @NotEmpty(message = "Text cant be empty")
     private String name;
     @NotNull
     private Double price;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

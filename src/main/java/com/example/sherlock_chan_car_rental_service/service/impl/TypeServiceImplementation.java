@@ -31,6 +31,14 @@ public class TypeServiceImplementation implements TypeService {
     }
 
     @Override
+    public TypeDto findById(Long id) {
+        return typeRepository.findById(id)
+                .map(typeMapper::typeToTypeDto)
+                .orElseThrow(()->
+                        new NotFoundException(String.format("Type with id %d doesn't exist",id)));
+    }
+
+    @Override
     public String findTypeNameById(Long id) {
         Type type = typeRepository
                 .findById(id)
@@ -60,5 +68,11 @@ public class TypeServiceImplementation implements TypeService {
         type.setName(typeUpdateDto.getName());
 
         return typeMapper.typeToTypeDto(typeRepository.save(type));
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        typeRepository.deleteById(id);
+
     }
 }

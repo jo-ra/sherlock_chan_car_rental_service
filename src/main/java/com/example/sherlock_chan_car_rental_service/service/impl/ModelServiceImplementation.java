@@ -28,6 +28,23 @@ public class ModelServiceImplementation implements ModelService {
                 .map(modelMapper::modelToModelDto);
     }
 
+    @Override
+    public ModelDto findById(Long id) {
+        return modelRepository.findById(id)
+                .map(modelMapper::modelToModelDto)
+                .orElseThrow(()->
+                        new NotFoundException(String.format("Model with id %d doesnt exist",id)));
+    }
+
+    @Override
+    public String findModelNameById(Long id) {
+        Model model=modelRepository
+                .findById(id)
+                .orElseThrow(()->
+                        new NotFoundException(String.format("Model with provided id %d isn't found",id)));
+        return model.getName();
+    }
+
 
     @Override
     public ModelDto createModel(ModelCreateDto modelCreateDto) {
