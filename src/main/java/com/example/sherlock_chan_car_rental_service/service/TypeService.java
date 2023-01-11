@@ -10,7 +10,10 @@ public interface TypeService {
 
     Page<TypeDto> findAll(Pageable pageable);
 
+    TypeDto findById(Long id);
     String findTypeNameById(Long id);
     TypeDto createType(TypeCreateDto typeCreateDto);
     TypeDto updateType(Long id, TypeUpdateDto typeUpdateDto);
+
+    void deleteById(Long id);
 }
