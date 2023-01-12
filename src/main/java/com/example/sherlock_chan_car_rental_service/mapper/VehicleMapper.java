@@ -4,6 +4,7 @@ import com.example.sherlock_chan_car_rental_service.domain.Vehicle;
 import com.example.sherlock_chan_car_rental_service.dto.VehicleCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.VehicleDto;
 import com.example.sherlock_chan_car_rental_service.exception.NotFoundException;
+import com.example.sherlock_chan_car_rental_service.repository.CompanyRepository;
 import com.example.sherlock_chan_car_rental_service.repository.ModelRepository;
 import com.example.sherlock_chan_car_rental_service.repository.TypeRepository;
 import org.springframework.stereotype.Component;
@@ -16,12 +17,19 @@ public class VehicleMapper {
     private ModelMapper modelMapper;
     private TypeMapper typeMapper;
 
+    private CompanyMapper companyMapper;
+    private CompanyRepository companyRepository;
+
+
     public VehicleMapper(ModelRepository modelRepository, TypeRepository typeRepository,
-                         ModelMapper modelMapper, TypeMapper typeMapper){
+                         ModelMapper modelMapper, TypeMapper typeMapper,
+                         CompanyMapper companyMapper,CompanyRepository companyRepository){
         this.modelMapper = modelMapper;
         this.typeMapper = typeMapper;
         this.modelRepository = modelRepository;
         this.typeRepository = typeRepository;
+        this.companyMapper=companyMapper;
+        this.companyRepository=companyRepository;
     }
 
     public VehicleDto vehicleToVehicleDto(Vehicle vehicle){
@@ -29,6 +37,7 @@ public class VehicleMapper {
         vehicleDto.setId(vehicle.getId());
         vehicleDto.setModelDto(modelMapper.modelToModelDto(vehicle.getModel()));
         vehicleDto.setTypeDto(typeMapper.typeToTypeDto(vehicle.getType()));
+        vehicleDto.setCompanyDto(companyMapper.companyToCompanyDto(vehicle.getCompany()));
 
         return vehicleDto;
     }
@@ -41,7 +50,9 @@ public class VehicleMapper {
         vehicle.setType(typeRepository.
                 findById(vehicleCreateDto.getType_id())
                 .orElseThrow(() -> new NotFoundException(String.format("Type with provided id %d has not been found", vehicleCreateDto.getType_id()))));
-
+        vehicle.setCompany(companyRepository.
+                findById(vehicleCreateDto.getCompany_id())
+                .orElseThrow(()->new NotFoundException(String.format("Company with provided id %d has not been found",vehicleCreateDto.getCompany_id()))));
         return vehicle;
     }
 }

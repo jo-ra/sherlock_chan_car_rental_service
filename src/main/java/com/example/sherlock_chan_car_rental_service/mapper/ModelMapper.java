@@ -17,6 +17,13 @@ public class ModelMapper {
         modelDto.setPrice(model.getPrice());
         return modelDto;
     }
+    public Model modelDtoToModel(ModelDto modelDto){
+        Model model=new Model();
+        model.setId(modelDto.getId());
+        model.setName(modelDto.getName());
+        model.setPrice(modelDto.getPrice());
+        return model;
+    }
 
     public Model modelCreateDtoToModel(ModelCreateDto modelCreateDto){
         Model model=new Model();

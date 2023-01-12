@@ -18,6 +18,12 @@ public class TypeMapper {
         return typeDto;
     }
 
+    public Type typeDtoToType(TypeDto typeDto){
+        Type type=new Type();
+        type.setId(typeDto.getId());
+        type.setName(typeDto.getName());
+        return type;
+    }
     public Type typeCreateDtoToType(TypeCreateDto typeCreateDto){
         Type type=new Type();
         type.setName(typeCreateDto.getName());

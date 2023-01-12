@@ -22,7 +22,6 @@ public class Vehicle {
     @ManyToOne
     private Type type;
 
-
     public Vehicle(){
 
     }

@@ -13,6 +13,9 @@ public class VehicleDto {
     @JsonProperty("type")
     private TypeDto typeDto;
 
+    @JsonProperty("company")
+    private CompanyDto companyDto;
+
     public Long getId() {
         return id;
     }
@@ -36,5 +39,13 @@ public class VehicleDto {
 
     public void setTypeDto(TypeDto typeDto) {
         this.typeDto = typeDto;
+    }
+
+    public CompanyDto getCompanyDto() {
+        return companyDto;
+    }
+
+    public void setCompanyDto(CompanyDto companyDto) {
+        this.companyDto = companyDto;
     }
 }

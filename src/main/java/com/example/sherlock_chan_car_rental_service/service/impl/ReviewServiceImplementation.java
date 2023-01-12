@@ -116,7 +116,7 @@ public class ReviewServiceImplementation implements ReviewService {
     @Override
     public ReviewDto updateReview(Long id, ReviewUpdateDto reviewUpdateDto) {
         Review review=reviewRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(String.format("Review with id: %d not found")));
+                .orElseThrow(()->new NotFoundException(String.format("Review with id: %d not found",id)));
         review.setStar(reviewUpdateDto.getStar());
         review.setComment(reviewUpdateDto.getComment());
         return reviewMapper.reviewToReviewDto(reviewRepository.save(review));
