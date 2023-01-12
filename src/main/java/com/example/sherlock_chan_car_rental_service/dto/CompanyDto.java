@@ -48,4 +48,11 @@ public class CompanyDto {
         this.description = description;
     }
 
+    public Double getRank() {
+        return rank;
+    }
+
+    public void setRank(Double rank) {
+        this.rank = rank;
+    }
 }

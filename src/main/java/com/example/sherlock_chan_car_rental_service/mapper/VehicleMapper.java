@@ -61,7 +61,7 @@ public class VehicleMapper {
         vehicle.setId(vehicleDto.getId());
         vehicle.setType(typeMapper.typeDtoToType(vehicleDto.getTypeDto()));
         vehicle.setModel(modelMapper.modelDtoToModel(vehicleDto.getModelDto()));
-
+        vehicle.setCompany(companyMapper.companyDtoToCompany(vehicleDto.getCompanyDto()));
         return vehicle;
     }
 }

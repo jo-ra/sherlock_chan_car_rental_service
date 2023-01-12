@@ -32,13 +32,4 @@ public class ModelMapper {
 
         return model;
     }
-
-    public Model modelDtoToModel(ModelDto modelDto){
-        Model model = new Model();
-        model.setName(modelDto.getName());
-        model.setId(modelDto.getId());
-        model.setPrice(modelDto.getPrice());
-
-        return model;
-    }
 }

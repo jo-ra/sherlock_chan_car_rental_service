@@ -170,17 +170,17 @@ public class ReservationServiceImplementation implements ReservationService {
         boolean isAvailable = false;
 
         for(Vehicle vehicle : availableVehicles){
-            System.out.println(vehicle.getId() + " " + vehicle.getModel() + " " + vehicle.getCompany().getId());
-        }
-
-        for(Vehicle vehicle : availableVehicles){
             if((vehicle.getType().getId().equals(typeId)) && vehicle.getCompany().getId().equals(reservationCreateDto.getCompany_id())){
                 isAvailable = true;
                 break;
             }
         }
 
-        System.out.println("Available/notAvailable -> " + isAvailable);
+        if(isAvailable){
+            System.out.println("Can make reservation !");
+        }else{
+            System.out.println("Cannot make reservation !");
+        }
 
         return null;
     }

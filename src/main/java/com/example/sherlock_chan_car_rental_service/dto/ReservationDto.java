@@ -21,6 +21,8 @@ public class ReservationDto {
 
     private Long user_id;
 
+    private Double total_price;
+
     public Long getId() {
         return id;
     }
@@ -75,5 +77,13 @@ public class ReservationDto {
 
     public void setUser_id(Long user_id) {
         this.user_id = user_id;
+    }
+
+    public Double getTotal_price() {
+        return total_price;
+    }
+
+    public void setTotal_price(Double total_price) {
+        this.total_price = total_price;
     }
 }
