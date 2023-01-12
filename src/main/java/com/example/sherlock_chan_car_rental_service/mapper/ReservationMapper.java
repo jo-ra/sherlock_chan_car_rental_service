@@ -50,13 +50,6 @@ public class ReservationMapper {
                         String.format("Company with provided id %d has not been found", reservationCreateDto.getCompany_id())
                 )));
 
-        reservation.setVehicle(vehicleRepository
-                .findById(reservationCreateDto.getVehicle_id())
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("Vehicle with provided id %d has not been found", reservationCreateDto.getVehicle_id())
-                )));
-
-        reservation.setIs_active(reservationCreateDto.getIs_active());
         reservation.setUser_id(reservationCreateDto.getUser_id());
 
         return reservation;

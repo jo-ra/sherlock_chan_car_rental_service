@@ -14,7 +14,6 @@ public class CompanyDto {
 
     private Integer numVehicles;
 
-    private Double rank;
 
     public Long getId() {
         return id;
@@ -48,11 +47,4 @@ public class CompanyDto {
         this.description = description;
     }
 
-    public Double getRank() {
-        return rank;
-    }
-
-    public void setRank(Double rank) {
-        this.rank = rank;
-    }
 }
