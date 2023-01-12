@@ -10,6 +10,9 @@ public interface CompanyService {
 
     Page<CompanyDto> findAll(Pageable pageable);
 
+    CompanyDto findById(Long id);
+
+
     CompanyDto updateCompany(Long id, CompanyUpdateDto companyUpdateDto);
     CompanyDto createCompany(CompanyCreateDto companyCreateDto);
 

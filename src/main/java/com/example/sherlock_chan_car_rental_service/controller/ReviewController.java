@@ -48,7 +48,7 @@ public class ReviewController {
     }
 
     @GetMapping("/listByCompany/{company_name}")
-    public ResponseEntity<List<ReviewDto>> findByCompany(@PathVariable("comapany_name") String company_name){
+    public ResponseEntity<List<ReviewDto>> findByCompany(@PathVariable("company_name") String company_name){
         return new ResponseEntity<>(reviewService.findByCompany(company_name),HttpStatus.OK);
     }
 
