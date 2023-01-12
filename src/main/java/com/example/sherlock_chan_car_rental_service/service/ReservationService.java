@@ -2,6 +2,7 @@ package com.example.sherlock_chan_car_rental_service.service;
 
 import com.example.sherlock_chan_car_rental_service.dto.ReservationCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.ReservationDto;
+import com.example.sherlock_chan_car_rental_service.dto.VehicleDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,4 +19,5 @@ public interface ReservationService {
 
     ReservationDto createReservationByType(ReservationCreateDto reservationCreateDto, Long typeId);
     ReservationDto createReservationByModel(ReservationCreateDto reservationCreateDto, Long modelId);
+    List<VehicleDto> listAvailableVehicles();
 }

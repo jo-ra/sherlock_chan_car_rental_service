@@ -1,6 +1,8 @@
 package com.example.sherlock_chan_car_rental_service.controller;
 
+import com.example.sherlock_chan_car_rental_service.dto.ReservationCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.ReservationDto;
+import com.example.sherlock_chan_car_rental_service.dto.VehicleDto;
 import com.example.sherlock_chan_car_rental_service.service.ReservationService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -9,12 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -86,5 +86,15 @@ public class ReservationController {
         }
 
         return new ResponseEntity<>(reservationService.filterByAll(vehicle_type,city_name,company_name,start_date_local,end_date_local,sort), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAvailableVehicles/")
+    public ResponseEntity<List<VehicleDto>> getAvailableVehicles(){
+        return new ResponseEntity<>(reservationService.listAvailableVehicles(), HttpStatus.OK);
+    }
+
+    @PostMapping("/reserveByType/{type}")
+    public ResponseEntity<ReservationDto> reserveByType(@PathVariable("type") Long typeId, @RequestBody @Valid ReservationCreateDto reservationCreateDto){
+        return new ResponseEntity<>(reservationService.createReservationByType(reservationCreateDto, typeId), HttpStatus.OK);
     }
 }

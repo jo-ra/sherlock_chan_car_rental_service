@@ -64,5 +64,13 @@ public class Vehicle {
         this.type = type;
     }
 
-
+    @Override
+    public boolean equals(Object obj) {
+        if(obj != null && obj instanceof Vehicle){
+            Vehicle vehicle = (Vehicle) obj;
+            return this.getType().equals(vehicle.getType()) && this.getCompany().equals(vehicle.getCompany())
+                    && this.getModel().equals(vehicle.getModel());
+        }
+        return false;
+    }
 }

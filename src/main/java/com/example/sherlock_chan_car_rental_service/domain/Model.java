@@ -50,4 +50,12 @@ public class Model {
         this.price = price;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj != null && obj instanceof Model){
+            Model model = (Model) obj;
+            return this.getName().equalsIgnoreCase(model.getName());
+        }
+        return false;
+    }
 }

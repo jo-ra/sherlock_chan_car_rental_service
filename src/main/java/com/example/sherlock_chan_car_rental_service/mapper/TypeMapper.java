@@ -30,4 +30,12 @@ public class TypeMapper {
 //        type.setVehicles(vehicles);
         return type;
     }
+
+    public Type typeDtoToType(TypeDto typeDto){
+        Type type = new Type();
+        type.setId(typeDto.getId());
+        type.setName(typeDto.getName());
+
+        return type;
+    }
 }
