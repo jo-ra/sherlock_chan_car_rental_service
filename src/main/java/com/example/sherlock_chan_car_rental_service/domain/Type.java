@@ -35,4 +35,13 @@ public class Type {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj != null && obj instanceof Type){
+            Type type = (Type) obj;
+            return this.getName().equalsIgnoreCase(type.getName());
+        }
+        return false;
+    }
 }

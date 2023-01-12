@@ -4,6 +4,7 @@ import com.example.sherlock_chan_car_rental_service.domain.Reservation;
 import com.example.sherlock_chan_car_rental_service.domain.Vehicle;
 import com.example.sherlock_chan_car_rental_service.dto.ReservationCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.ReservationDto;
+import com.example.sherlock_chan_car_rental_service.dto.VehicleDto;
 import com.example.sherlock_chan_car_rental_service.mapper.ModelMapper;
 import com.example.sherlock_chan_car_rental_service.mapper.ReservationMapper;
 import com.example.sherlock_chan_car_rental_service.mapper.VehicleMapper;
@@ -27,17 +28,20 @@ import java.util.stream.Collectors;
 public class ReservationServiceImplementation implements ReservationService {
 
     private ReservationMapper reservationMapper;
+    private VehicleMapper vehicleMapper;
 
     private ReservationRepository reservationRepository;
     private CompanyRepository companyRepository;
     private VehicleRepository vehicleRepository;
 
     public ReservationServiceImplementation(ReservationMapper reservationMapper, CompanyRepository companyRepository,
-                                            ReservationRepository reservationRepository, VehicleRepository vehicleRepository){
+                                            ReservationRepository reservationRepository, VehicleRepository vehicleRepository,
+                                            VehicleMapper vehicleMapper){
         this.reservationMapper = reservationMapper;
         this.companyRepository=companyRepository;
         this.reservationRepository = reservationRepository;
         this.vehicleRepository = vehicleRepository;
+        this.vehicleMapper = vehicleMapper;
     }
 
     @Override
@@ -148,8 +152,58 @@ public class ReservationServiceImplementation implements ReservationService {
 
     @Override
     public ReservationDto createReservationByType(ReservationCreateDto reservationCreateDto, Long typeId) {
-        // Izvucem vehicle po company_id i po type_id
+
+        /** FUNKCIJA KOJA TREBA DA SE ZAVRSI
+         *
+         *  Korisnik u reservationCreateDto salje i userid, i vehicle id i company id i datum
+         *  Treba da docupam listu dostupnih vozila i da proverim da li se vozilo sa typeId
+         *  i sa kompani id iz createDto nalazi u listi dostupnih vozila. Ako se nalazi,
+         *  izvrsiti kreiranje rezervacije.
+         *
+         * */
+
+        List<Vehicle> availableVehicles = listAvailableVehicles()
+                .stream()
+                .map(vehicleMapper::vehicleDtoToVehicle)
+                .collect(Collectors.toList());
+
+        boolean isAvailable = false;
+
+        for(Vehicle vehicle : availableVehicles){
+            System.out.println(vehicle.getId() + " " + vehicle.getModel() + " " + vehicle.getCompany().getId());
+        }
+
+        for(Vehicle vehicle : availableVehicles){
+            if((vehicle.getType().getId().equals(typeId)) && vehicle.getCompany().getId().equals(reservationCreateDto.getCompany_id())){
+                isAvailable = true;
+                break;
+            }
+        }
+
+        System.out.println("Available/notAvailable -> " + isAvailable);
+
         return null;
+    }
+
+    public List<VehicleDto> listAvailableVehicles(){
+        List<Vehicle> vehiclesResultSet = vehicleRepository.findAll();
+        List<Reservation> reservationsResultSet = reservationRepository.findAll();
+        List<Vehicle> resultVehicles = new ArrayList<>();
+        List<VehicleDto> resultDtos = new ArrayList<>();
+
+        for(Reservation reservation : reservationsResultSet){
+            for (Vehicle vehicle : vehiclesResultSet){
+                if(!reservation.getVehicle().equals(vehicle)){
+                    resultVehicles.add(vehicle);
+                }
+            }
+        }
+
+        for(Vehicle vehicle : resultVehicles){
+            resultDtos.add(vehicleMapper.vehicleToVehicleDto(vehicle));
+        }
+
+        return resultDtos;
     }
 
     @Override

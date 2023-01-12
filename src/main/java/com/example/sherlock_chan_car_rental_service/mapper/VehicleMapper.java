@@ -44,4 +44,13 @@ public class VehicleMapper {
 
         return vehicle;
     }
+
+    public Vehicle vehicleDtoToVehicle(VehicleDto vehicleDto){
+        Vehicle vehicle = new Vehicle();
+        vehicle.setId(vehicleDto.getId());
+        vehicle.setType(typeMapper.typeDtoToType(vehicleDto.getTypeDto()));
+        vehicle.setModel(modelMapper.modelDtoToModel(vehicleDto.getModelDto()));
+
+        return vehicle;
+    }
 }
