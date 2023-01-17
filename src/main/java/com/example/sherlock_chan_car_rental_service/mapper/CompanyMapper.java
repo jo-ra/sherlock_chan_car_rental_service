@@ -50,12 +50,6 @@ public class CompanyMapper {
         company.setNumVehicls(companyDto.getNumVehicles());
         company.setName(companyDto.getName());
         company.setDescription(companyDto.getDescription());
-//        Address address = new Address();
-//        address.setCountry(companyDto.getAddressDto().getCountry());
-//        address.setCity(companyDto.getAddressDto().getCity());
-//        address.setStreet(companyDto.getAddressDto().getStreet());
-//        address.setPostcode(companyDto.getAddressDto().getPostcode());
-//        company.setAddress(address);
         company.setRank(companyDto.getRank());
         return company;
     }

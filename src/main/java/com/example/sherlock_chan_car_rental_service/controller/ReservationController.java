@@ -1,8 +1,6 @@
 package com.example.sherlock_chan_car_rental_service.controller;
 
-import com.example.sherlock_chan_car_rental_service.dto.ReservationCreateDto;
-import com.example.sherlock_chan_car_rental_service.dto.ReservationDto;
-import com.example.sherlock_chan_car_rental_service.dto.VehicleDto;
+import com.example.sherlock_chan_car_rental_service.dto.*;
 import com.example.sherlock_chan_car_rental_service.service.ReservationService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -93,8 +91,18 @@ public class ReservationController {
         return new ResponseEntity<>(reservationService.listAvailableVehicles(), HttpStatus.OK);
     }
 
-    @PostMapping("/reserveByType/{type}")
-    public ResponseEntity<ReservationDto> reserveByType(@PathVariable("type") Long typeId, @RequestBody @Valid ReservationCreateDto reservationCreateDto){
-        return new ResponseEntity<>(reservationService.createReservationByType(reservationCreateDto, typeId), HttpStatus.OK);
+    @PostMapping("/reserveByType/")
+    public ResponseEntity<ReservationDto> reserveByType(@RequestBody @Valid ReservationCreateByTypeDto reservationCreateByTypeDto){
+        return new ResponseEntity<>(reservationService.createReservationByType(reservationCreateByTypeDto), HttpStatus.OK);
+    }
+
+    @PostMapping("/reserveByModel/")
+    public ResponseEntity<ReservationDto> reserveByModel(@RequestBody @Valid ReservationCreateByModelDto reservationCreateByModelDto){
+        return new ResponseEntity<>(reservationService.createReservationByModel(reservationCreateByModelDto), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/cancelReservation/{id}")
+    public ResponseEntity<ReservationDto> cancelReservation(@PathVariable("id") Long reservation_id){
+        return new ResponseEntity<>(reservationService.cancelReservation(reservation_id), HttpStatus.OK);
     }
 }

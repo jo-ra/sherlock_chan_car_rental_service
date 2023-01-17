@@ -19,7 +19,7 @@ public class Vehicle {
     @JoinColumn(name="model_id")
     private Model model;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Type type;
 
     public Vehicle(){

@@ -1,8 +1,6 @@
 package com.example.sherlock_chan_car_rental_service.service;
 
-import com.example.sherlock_chan_car_rental_service.dto.ReservationCreateDto;
-import com.example.sherlock_chan_car_rental_service.dto.ReservationDto;
-import com.example.sherlock_chan_car_rental_service.dto.VehicleDto;
+import com.example.sherlock_chan_car_rental_service.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,7 +15,10 @@ public interface ReservationService {
     List<ReservationDto> findByDate(LocalDate start_date, LocalDate end_date, boolean sort_by_price);
     List<ReservationDto> filterByAll(String vehicle_type, String city_name, String company_name, LocalDate start_date, LocalDate end_date, boolean sort_by_price);
 
-    ReservationDto createReservationByType(ReservationCreateDto reservationCreateDto, Long typeId);
-    ReservationDto createReservationByModel(ReservationCreateDto reservationCreateDto, Long modelId);
+    ReservationDto createReservationByType(ReservationCreateByTypeDto reservationCreateByTypeDto);
+    ReservationDto createReservationByModel(ReservationCreateByModelDto reservationCreateByModelDto);
+
+    ReservationDto cancelReservation(Long reservation_id);
+
     List<VehicleDto> listAvailableVehicles();
 }

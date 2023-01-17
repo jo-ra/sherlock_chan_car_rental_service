@@ -31,7 +31,7 @@ public class ReservationMapper {
         reservationDto.setCompanyDto(companyMapper.companyToCompanyDto(reservation.getCompany()));
         reservationDto.setIs_active(reservation.getIs_active());
         reservationDto.setUser_id(reservation.getUser_id());
-
+        reservationDto.setTotal_price(reservation.getTotal_price());
         reservationDto.setStarting_date(reservation.getStarting_date());
         reservationDto.setEnding_date(reservation.getEnding_date());
 
