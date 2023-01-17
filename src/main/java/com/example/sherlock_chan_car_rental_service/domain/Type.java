@@ -12,6 +12,9 @@ public class Type {
     private Long id;
     private String name;
 
+    @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "type",orphanRemoval = true)
+    private List<Vehicle>vehicleList;
+
     public Type(){
 
     }

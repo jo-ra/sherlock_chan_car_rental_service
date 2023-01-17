@@ -1,6 +1,7 @@
 package com.example.sherlock_chan_car_rental_service.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="MODEL")
@@ -14,6 +15,9 @@ public class Model {
     private String name;
 
     private Double price;
+
+    @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "model",orphanRemoval = true)
+    private List<Vehicle>vehicleList;
 
 
     public Model(){

@@ -15,8 +15,7 @@ public class Vehicle {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehicle",orphanRemoval = true)
     private List<Reservation> reservations =new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="model_id")
+    @ManyToOne
     private Model model;
 
     @ManyToOne(cascade = CascadeType.ALL)

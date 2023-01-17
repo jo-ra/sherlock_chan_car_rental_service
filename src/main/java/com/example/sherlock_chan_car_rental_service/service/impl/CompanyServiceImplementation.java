@@ -33,6 +33,11 @@ public class CompanyServiceImplementation implements CompanyService {
     }
 
     @Override
+    public CompanyDto findById(Long id) {
+        return null;
+    }
+
+    @Override
     public CompanyDto updateCompany(Long id, CompanyUpdateDto companyUpdateDto) {
         Company company = companyRepository
                 .findById(id)
