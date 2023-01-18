@@ -1,6 +1,7 @@
 package com.example.sherlock_chan_car_rental_service.controller;
 
 import com.example.sherlock_chan_car_rental_service.dto.*;
+import com.example.sherlock_chan_car_rental_service.security.CheckSecurity;
 import com.example.sherlock_chan_car_rental_service.service.ReviewService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -34,43 +35,56 @@ public class ReviewController {
                             "Default sort order is ascending. " +
                             "Multiple sort criteria are supported.")})
     @GetMapping
-    public ResponseEntity<Page<ReviewDto>> findAllTypes(@ApiIgnore Pageable pageable){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<Page<ReviewDto>> findAllTypes(@RequestHeader("Authorization") String authorization,
+                                                        @ApiIgnore Pageable pageable){
         return new ResponseEntity<>(reviewService.findAll(pageable), HttpStatus.OK);
     }
     @GetMapping("/listById/{id}")
-    public ResponseEntity<ReviewDto> findById(@PathVariable("id") Long id) {
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<ReviewDto> findById(@RequestHeader("Authorization") String authorization,
+                                              @PathVariable("id") Long id) {
         return new ResponseEntity<>(reviewService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping("/listByCity/{city_name}")
-    public ResponseEntity<List<ReviewDto>> findByCity(@PathVariable("city_name") String city_name){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<List<ReviewDto>> findByCity(@RequestHeader("Authorization") String authorization,
+                                                      @PathVariable("city_name") String city_name){
         return new ResponseEntity<>(reviewService.findByCity(city_name),HttpStatus.OK);
     }
 
     @GetMapping("/listByCompany/{company_name}")
-    public ResponseEntity<List<ReviewDto>> findByCompany(@PathVariable("company_name") String company_name){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<List<ReviewDto>> findByCompany(@RequestHeader("Authorization") String authorization,
+                                                         @PathVariable("company_name") String company_name){
         return new ResponseEntity<>(reviewService.findByCompany(company_name),HttpStatus.OK);
     }
 
     @GetMapping("/getCompaniesByReview")
-    public ResponseEntity<List<CompanyDto>> getCompaniesByReview(){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<List<CompanyDto>> getCompaniesByReview(@RequestHeader("Authorization") String authorization){
         return new ResponseEntity<>(reviewService.getCompaniesByReview(),HttpStatus.OK);
     }
 
     @PostMapping("/createReview")
-    public ResponseEntity<ReviewDto> createReview(@RequestBody @Valid ReviewCreateDto reviewCreateDto){
+    @CheckSecurity(userTypes = {"Client"})
+    public ResponseEntity<ReviewDto> createReview(@RequestHeader("Authorization") String authorization,
+                                                  @RequestBody @Valid ReviewCreateDto reviewCreateDto){
         return new ResponseEntity<>(reviewService.createReview(reviewCreateDto),HttpStatus.OK);
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<ReviewDto> updateReview(@PathVariable("id")Long id, @RequestBody @Valid ReviewUpdateDto reviewUpdateDto){
+    @CheckSecurity(userTypes = {"Client"})
+    public ResponseEntity<ReviewDto> updateReview(@RequestHeader("Authorization") String authorization,
+                                                  @PathVariable("id")Long id, @RequestBody @Valid ReviewUpdateDto reviewUpdateDto){
         return new ResponseEntity<>(reviewService.updateReview(id,reviewUpdateDto),HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    void deleteById(@PathVariable("id") Long id){
+    @CheckSecurity(userTypes = {"Client"})
+    void deleteById(@RequestHeader("Authorization") String authorization,
+                    @PathVariable("id") Long id){
         reviewService.deleteById(id);
     }
-
-
 }

@@ -25,6 +25,9 @@ public class Company {
     @OneToMany(cascade = CascadeType.ALL,  mappedBy = "company", orphanRemoval = true)
     private List<Review> reviews= new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", orphanRemoval = true)
+    private List<Reservation> reservations = new ArrayList<>();
+
     public Company(){
 
     }

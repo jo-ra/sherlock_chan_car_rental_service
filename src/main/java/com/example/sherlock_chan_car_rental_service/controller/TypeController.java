@@ -3,6 +3,7 @@ package com.example.sherlock_chan_car_rental_service.controller;
 import com.example.sherlock_chan_car_rental_service.dto.TypeCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.TypeDto;
 import com.example.sherlock_chan_car_rental_service.dto.TypeUpdateDto;
+import com.example.sherlock_chan_car_rental_service.security.CheckSecurity;
 import com.example.sherlock_chan_car_rental_service.service.TypeService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -35,32 +36,44 @@ public class TypeController {
                             "Default sort order is ascending. " +
                             "Multiple sort criteria are supported.")})
     @GetMapping
-    public ResponseEntity<Page<TypeDto>> findAllTypes(@ApiIgnore Pageable pageable){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<Page<TypeDto>> findAllTypes(@RequestHeader("Authorization") String authorization,
+                                                      @ApiIgnore Pageable pageable){
         return new ResponseEntity<>(typeService.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/listById/{id}")
-    public ResponseEntity<TypeDto> findById(@PathVariable("id") Long id) {
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<TypeDto> findById(@RequestHeader("Authorization") String authorization,
+                                            @PathVariable("id") Long id) {
         return new ResponseEntity<>(typeService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping("/listByName/{id}")
-    public ResponseEntity<String> findTypeNameById(@PathVariable("id") Long id){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<String> findTypeNameById(@RequestHeader("Authorization") String authorization,
+                                                   @PathVariable("id") Long id){
         return new ResponseEntity<>(typeService.findTypeNameById(id),HttpStatus.OK);
     }
     @PostMapping("/createType")
-    public ResponseEntity<TypeDto> createType(@RequestBody @Valid TypeCreateDto typeCreateDto) {
+    @CheckSecurity(userTypes = {"Manager"})
+    public ResponseEntity<TypeDto> createType(@RequestHeader("Authorization") String authorization,
+                                              @RequestBody @Valid TypeCreateDto typeCreateDto) {
         return new ResponseEntity<>(typeService.createType(typeCreateDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<TypeDto> updateType(@PathVariable("id") Long id,
+    @CheckSecurity(userTypes = {"Manager"})
+    public ResponseEntity<TypeDto> updateType(@RequestHeader("Authorization") String authorization,
+                                              @PathVariable("id") Long id,
                                               @RequestBody @Valid TypeUpdateDto typeUpdateDto) {
         return new ResponseEntity<>(typeService.updateType(id, typeUpdateDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    void delete(@PathVariable("id") Long id) {
+    @CheckSecurity(userTypes = {"Manager"})
+    void delete(@RequestHeader("Authorization") String authorization,
+                @PathVariable("id") Long id) {
         typeService.deleteById(id);
 
     }

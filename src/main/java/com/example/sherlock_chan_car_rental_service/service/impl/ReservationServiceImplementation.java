@@ -319,6 +319,8 @@ public class ReservationServiceImplementation implements ReservationService {
 
         reservationRepository.delete(reservation);
 
+        callDecrease(reservation.getUser_id());
+
         return reservationMapper.reservationToReservationDto(reservation);
     }
 
@@ -329,6 +331,20 @@ public class ReservationServiceImplementation implements ReservationService {
         }catch (HttpClientErrorException e){
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)){
                 throw new NotFoundException(String.format("User with id %d not found " , user_id));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void callDecrease(Long user_id){
+        ResponseEntity<ClientDto> userResponseEntity = null;
+
+        try{
+            userResponseEntity = userServiceRestTemplate.exchange("/user/decreaseReservations/" + user_id, HttpMethod.GET, null, ClientDto.class);
+        }catch (HttpClientErrorException e){
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)){
+                throw new NotFoundException(String.format("User with id %d not found ", user_id));
             }
         }catch(Exception e){
             e.printStackTrace();

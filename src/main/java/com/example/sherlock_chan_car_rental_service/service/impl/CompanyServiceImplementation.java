@@ -34,7 +34,10 @@ public class CompanyServiceImplementation implements CompanyService {
 
     @Override
     public CompanyDto findById(Long id) {
-        return null;
+        return companyRepository
+                .findById(id)
+                .map(companyMapper::companyToCompanyDto)
+                .orElseThrow(() -> new NotFoundException(String.format("Company with provided id %d cannot be found", id)));
     }
 
     @Override
@@ -60,6 +63,17 @@ public class CompanyServiceImplementation implements CompanyService {
     public CompanyDto createCompany(CompanyCreateDto companyCreateDto) {
         Company company = companyMapper.companyCreateDtoToCompany(companyCreateDto);
         companyRepository.save(company);
+
+        return companyMapper.companyToCompanyDto(company);
+    }
+
+    @Override
+    public CompanyDto deleteCompany(Long id) {
+        Company company = companyRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Company with provided id %d cannot be found", id)));
+
+        companyRepository.delete(company);
 
         return companyMapper.companyToCompanyDto(company);
     }

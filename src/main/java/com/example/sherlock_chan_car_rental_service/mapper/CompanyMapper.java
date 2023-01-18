@@ -56,7 +56,6 @@ public class CompanyMapper {
 //        address.setStreet(companyDto.getAddressDto().getStreet());
 //        address.setPostcode(companyDto.getAddressDto().getPostcode());
 //        company.setAddress(address);
-        company.setRank(companyDto.getRank());
         return company;
     }
 }

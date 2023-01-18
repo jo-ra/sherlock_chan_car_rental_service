@@ -18,6 +18,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.round;
+
 @Service
 public class ReviewServiceImplementation implements ReviewService {
     private ReviewRepository reviewRepository;
@@ -110,21 +112,73 @@ public class ReviewServiceImplementation implements ReviewService {
     public ReviewDto createReview(ReviewCreateDto reviewCreateDto) {
         Review review=reviewMapper.reviewCreateDtoToReview(reviewCreateDto);
         reviewRepository.save(review);
+
+        Company company = companyRepository
+                .findById(reviewCreateDto.getCompany_id())
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Company with provided id %d cannot be found", reviewCreateDto.getCompany_id())
+                ));
+
+        double companyRank = calculateRankForCompany(company.getName());
+        company.setRank(companyRank);
+
+        companyRepository.save(company);
+
         return reviewMapper.reviewToReviewDto(review);
+    }
+
+    private double calculateRankForCompany(String company_name){
+        List<ReviewDto> reviews = findByCompany(company_name);
+
+        double rank = 0.0;
+        double sum = 0.0;
+
+        for(ReviewDto review : reviews){
+            sum += review.getStar();
+        }
+
+        rank = sum / reviews.size();
+
+        System.out.println("Rank for company " + company_name + " is " + rank);
+
+        return rank;
     }
 
     @Override
     public ReviewDto updateReview(Long id, ReviewUpdateDto reviewUpdateDto) {
         Review review=reviewRepository.findById(id)
-                .orElseThrow(()->new NotFoundException(String.format("Review with id: %d not found",id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Review with id: %d not found",id)));
+
+        review.setId(id);
         review.setStar(reviewUpdateDto.getStar());
         review.setComment(reviewUpdateDto.getComment());
-        return reviewMapper.reviewToReviewDto(reviewRepository.save(review));
+
+        reviewRepository.save(review);
+
+        // Zaokruzivanje na dve decimale mora da se resi
+        // Ili ovo ili prelazak na BigDecimal
+        double rank = calculateRankForCompany(review.getCompany().getName());
+        review.getCompany().setRank(rank);
+
+        // Ponovno racunanje ranka jer smo promenili velicinu ocene
+        companyRepository.save(review.getCompany());
+
+        return reviewMapper.reviewToReviewDto(review);
     }
 
     @Override
     public void deleteById(Long id) {
+        Review review = reviewRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Review with id %d cannot be found", id)));
+
+        Company company = review.getCompany();
+
         reviewRepository.deleteById(id);
 
+        double rank = calculateRankForCompany(review.getCompany().getName());
+        company.setRank(rank);
+
+        companyRepository.save(company);
     }
 }

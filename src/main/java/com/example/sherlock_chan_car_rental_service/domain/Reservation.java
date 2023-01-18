@@ -17,7 +17,7 @@ public class Reservation {
     @ManyToOne
     private Vehicle vehicle;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Company company;
 
     private Long user_id;

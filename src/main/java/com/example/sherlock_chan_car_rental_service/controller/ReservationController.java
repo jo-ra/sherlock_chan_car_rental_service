@@ -1,6 +1,7 @@
 package com.example.sherlock_chan_car_rental_service.controller;
 
 import com.example.sherlock_chan_car_rental_service.dto.*;
+import com.example.sherlock_chan_car_rental_service.security.CheckSecurity;
 import com.example.sherlock_chan_car_rental_service.service.ReservationService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -35,22 +36,30 @@ public class ReservationController {
                             "Default sort order is ascending. " +
                             "Multiple sort criteria are supported.")})
     @GetMapping
-    public ResponseEntity<Page<ReservationDto>> getAllSchedules(@ApiIgnore Pageable pageable){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<Page<ReservationDto>> getAllSchedules(@RequestHeader("Authorization") String authorization,
+                                                                @ApiIgnore Pageable pageable){
         return new ResponseEntity<>(reservationService.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/listByCity/{city}/{sort}")
-    public ResponseEntity<List<ReservationDto>> findByCity(@PathVariable("city") String city, @PathVariable("sort") boolean sort){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<List<ReservationDto>> findByCity(@RequestHeader("Authorization") String authorization,
+                                                           @PathVariable("city") String city, @PathVariable("sort") boolean sort){
         return new ResponseEntity<>(reservationService.findByCity(city, sort),HttpStatus.OK);
     }
 
     @GetMapping("/listByCompany/{company}/{sort}")
-    public ResponseEntity<List<ReservationDto>> findByCompany(@PathVariable("company") String company, @PathVariable("sort") boolean sort){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<List<ReservationDto>> findByCompany(@RequestHeader("Authorization") String authorization,
+                                                              @PathVariable("company") String company, @PathVariable("sort") boolean sort){
         return new ResponseEntity<>(reservationService.findByCompany(company, sort),HttpStatus.OK);
     }
 
     @GetMapping("/listByDate/{start_date}/{end_date}/{sort}")
-    public ResponseEntity<List<ReservationDto>> findByDate(@PathVariable("start_date")String start_date,
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<List<ReservationDto>> findByDate(@RequestHeader("Authorization") String authorization,
+                                                           @PathVariable("start_date")String start_date,
                                                            @PathVariable("end_date") String end_date, @PathVariable("sort") boolean sort){
 
         LocalDate start_local_date = null;
@@ -67,7 +76,9 @@ public class ReservationController {
     }
 
     @GetMapping("/listByAll/{vehicle_type}/{city_name}/{company_name}/{start_date}/{end_date}/{sort}")
-    public ResponseEntity<List<ReservationDto>> findByAllParams(@PathVariable("vehicle_type") String vehicle_type,
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<List<ReservationDto>> findByAllParams(@RequestHeader("Authorization") String authorization,
+                                                                @PathVariable("vehicle_type") String vehicle_type,
                                                                 @PathVariable("city_name") String city_name,
                                                                 @PathVariable("company_name") String company_name,
                                                                 @PathVariable("start_date") String start_date,
@@ -87,22 +98,29 @@ public class ReservationController {
     }
 
     @GetMapping("/getAvailableVehicles/")
-    public ResponseEntity<List<VehicleDto>> getAvailableVehicles(){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<List<VehicleDto>> getAvailableVehicles(@RequestHeader("Authorization") String authorization){
         return new ResponseEntity<>(reservationService.listAvailableVehicles(), HttpStatus.OK);
     }
 
     @PostMapping("/reserveByType/")
-    public ResponseEntity<ReservationDto> reserveByType(@RequestBody @Valid ReservationCreateByTypeDto reservationCreateByTypeDto){
+    @CheckSecurity(userTypes = {"Client"})
+    public ResponseEntity<ReservationDto> reserveByType(@RequestHeader("Authorization") String authorization,
+                                                        @RequestBody @Valid ReservationCreateByTypeDto reservationCreateByTypeDto){
         return new ResponseEntity<>(reservationService.createReservationByType(reservationCreateByTypeDto), HttpStatus.OK);
     }
 
     @PostMapping("/reserveByModel/")
-    public ResponseEntity<ReservationDto> reserveByModel(@RequestBody @Valid ReservationCreateByModelDto reservationCreateByModelDto){
+    @CheckSecurity(userTypes = {"Client"})
+    public ResponseEntity<ReservationDto> reserveByModel(@RequestHeader("Authorization") String authorization,
+                                                         @RequestBody @Valid ReservationCreateByModelDto reservationCreateByModelDto){
         return new ResponseEntity<>(reservationService.createReservationByModel(reservationCreateByModelDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/cancelReservation/{id}")
-    public ResponseEntity<ReservationDto> cancelReservation(@PathVariable("id") Long reservation_id){
+    @CheckSecurity(userTypes = {"Manager","Client"})
+    public ResponseEntity<ReservationDto> cancelReservation(@RequestHeader("Authorization") String authorization,
+                                                            @PathVariable("id") Long reservation_id){
         return new ResponseEntity<>(reservationService.cancelReservation(reservation_id), HttpStatus.OK);
     }
 }

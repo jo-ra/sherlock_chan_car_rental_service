@@ -12,10 +12,9 @@ public interface CompanyService {
 
     CompanyDto findById(Long id);
 
-
     CompanyDto updateCompany(Long id, CompanyUpdateDto companyUpdateDto);
     CompanyDto createCompany(CompanyCreateDto companyCreateDto);
 
-
+    CompanyDto deleteCompany(Long id);
 }
 

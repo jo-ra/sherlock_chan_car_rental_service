@@ -1,6 +1,7 @@
 package com.example.sherlock_chan_car_rental_service.controller;
 
 import com.example.sherlock_chan_car_rental_service.dto.*;
+import com.example.sherlock_chan_car_rental_service.security.CheckSecurity;
 import com.example.sherlock_chan_car_rental_service.service.ModelService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,29 +34,41 @@ public class ModelController {
                             "Default sort order is ascending. " +
                             "Multiple sort criteria are supported.")})
     @GetMapping
-    public ResponseEntity<Page<ModelDto>> findAllTypes(@ApiIgnore Pageable pageable){
+    @CheckSecurity(userTypes = {"Admin", "Manager", "Client"})
+    public ResponseEntity<Page<ModelDto>> findAllTypes(@RequestHeader("Authorization") String authorization,
+                                                       @ApiIgnore Pageable pageable){
         return new ResponseEntity<>(modelService.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/listById/{id}")
-    public ResponseEntity<ModelDto> findById(@PathVariable("id") Long id) {
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<ModelDto> findById(@RequestHeader("Authorization") String authorization,
+                                             @PathVariable("id") Long id) {
         return new ResponseEntity<>(modelService.findById(id), HttpStatus.OK);
     }
     @GetMapping("/listByName/{id}")
-    public ResponseEntity<String> findModelNameById(@PathVariable("id") Long id){
+    @CheckSecurity(userTypes = {"Admin","Manager","Client"})
+    public ResponseEntity<String> findModelNameById(@RequestHeader("Authorization") String authorization,
+                                                    @PathVariable("id") Long id){
         return new ResponseEntity<>(modelService.findModelNameById(id),HttpStatus.OK);
     }
     @PostMapping("/createModel")
-    public ResponseEntity<ModelDto> createModel(@RequestBody @Valid ModelCreateDto modelCreateDto) {
+    @CheckSecurity(userTypes = {"Manager"})
+    public ResponseEntity<ModelDto> createModel(@RequestHeader("Authorization") String authorization,
+                                                @RequestBody @Valid ModelCreateDto modelCreateDto) {
         return new ResponseEntity<>(modelService.createModel(modelCreateDto), HttpStatus.CREATED);
     }
     @PutMapping("/edit/{id}")
-    public ResponseEntity<ModelDto> updateModel(@PathVariable("id") Long id,
+    @CheckSecurity(userTypes = {"Manager"})
+    public ResponseEntity<ModelDto> updateModel(@RequestHeader("Authorization") String authorization,
+                                                @PathVariable("id") Long id,
                                               @RequestBody @Valid ModelUpdateDto modelUpdateDto) {
         return new ResponseEntity<>(modelService.updateModel(id,modelUpdateDto), HttpStatus.OK);
     }
     @DeleteMapping("/delete/{id}")
-    void delete(@PathVariable("id") Long id) {
+    @CheckSecurity(userTypes = {"Manager"})
+    void delete(@RequestHeader("Authorization") String authorization,
+                @PathVariable("id") Long id) {
         modelService.deleteById(id);
 
     }
