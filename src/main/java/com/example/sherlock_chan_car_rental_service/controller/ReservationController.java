@@ -97,10 +97,22 @@ public class ReservationController {
         return new ResponseEntity<>(reservationService.filterByAll(vehicle_type,city_name,company_name,start_date_local,end_date_local,sort), HttpStatus.OK);
     }
 
-    @GetMapping("/getAvailableVehicles/")
+    @GetMapping("/getAvailableVehicles/{start_date}/{end_date}")
     @CheckSecurity(userTypes = {"Admin","Manager","Client"})
-    public ResponseEntity<List<VehicleDto>> getAvailableVehicles(@RequestHeader("Authorization") String authorization){
-        return new ResponseEntity<>(reservationService.listAvailableVehicles(), HttpStatus.OK);
+    public ResponseEntity<List<VehicleDto>> getAvailableVehicles(@RequestHeader("Authorization") String authorization,
+                                                                 @PathVariable("start_date") String start_date,
+                                                                 @PathVariable("end_date") String end_date){
+        LocalDate l_start_date = null;
+        LocalDate l_end_date = null;
+
+        try{
+            l_start_date = LocalDate.parse(start_date);
+            l_end_date = LocalDate.parse(end_date);
+        }catch (DateTimeParseException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(reservationService.listAvailableVehiclesNew(l_start_date, l_start_date), HttpStatus.OK);
     }
 
     @PostMapping("/reserveByType/")
@@ -115,6 +127,13 @@ public class ReservationController {
     public ResponseEntity<ReservationDto> reserveByModel(@RequestHeader("Authorization") String authorization,
                                                          @RequestBody @Valid ReservationCreateByModelDto reservationCreateByModelDto){
         return new ResponseEntity<>(reservationService.createReservationByModel(reservationCreateByModelDto), HttpStatus.OK);
+    }
+
+    @PostMapping("/reserveVehicle")
+    @CheckSecurity(userTypes = {"Client"})
+    public ResponseEntity<ReservationDto> reserveVehicle(@RequestHeader("Authorization") String authorization,
+                                                         @RequestBody @Valid ReservationCreateDto reservationCreateDto){
+        return new ResponseEntity<>(reservationService.reserveVehicle(reservationCreateDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/cancelReservation/{id}")

@@ -1,6 +1,8 @@
 package com.example.sherlock_chan_car_rental_service.mapper;
 
+import com.example.sherlock_chan_car_rental_service.domain.Company;
 import com.example.sherlock_chan_car_rental_service.domain.Reservation;
+import com.example.sherlock_chan_car_rental_service.domain.Vehicle;
 import com.example.sherlock_chan_car_rental_service.dto.ReservationCreateDto;
 import com.example.sherlock_chan_car_rental_service.dto.ReservationDto;
 import com.example.sherlock_chan_car_rental_service.exception.NotFoundException;
@@ -41,16 +43,17 @@ public class ReservationMapper {
     public Reservation reservationCreateDtoToReservation(ReservationCreateDto reservationCreateDto){
         Reservation reservation = new Reservation();
 
+        Vehicle vehicle = vehicleRepository
+                .findById(reservationCreateDto.getVehicle_id())
+                .orElseThrow(() -> new NotFoundException(String.format("Vehicle with provided id %d cannot be found", reservationCreateDto.getVehicle_id())));
+
+        Company company = vehicle.getCompany();
+
         reservation.setEnding_date(reservationCreateDto.getEnding_date());
         reservation.setStarting_date(reservationCreateDto.getStarting_date());
-
-        reservation.setCompany(companyRepository
-                .findById(reservationCreateDto.getCompany_id())
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("Company with provided id %d has not been found", reservationCreateDto.getCompany_id())
-                )));
-
         reservation.setUser_id(reservationCreateDto.getUser_id());
+        reservation.setVehicle(vehicle);
+        reservation.setCompany(company);
 
         return reservation;
     }

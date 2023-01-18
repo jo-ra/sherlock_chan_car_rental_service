@@ -12,8 +12,7 @@ public class ReservationCreateDto {
     private LocalDate ending_date;
 
     @NotNull
-    private Long company_id;
-
+    private Long vehicle_id;
 
     @NotNull
     private Long user_id;
@@ -35,15 +34,6 @@ public class ReservationCreateDto {
         this.ending_date = ending_date;
     }
 
-    public Long getCompany_id() {
-        return company_id;
-    }
-
-    public void setCompany_id(Long company_id) {
-        this.company_id = company_id;
-    }
-
-
     public Long getUser_id() {
         return user_id;
     }
@@ -52,4 +42,11 @@ public class ReservationCreateDto {
         this.user_id = user_id;
     }
 
+    public Long getVehicle_id() {
+        return vehicle_id;
+    }
+
+    public void setVehicle_id(Long vehicle_id) {
+        this.vehicle_id = vehicle_id;
+    }
 }

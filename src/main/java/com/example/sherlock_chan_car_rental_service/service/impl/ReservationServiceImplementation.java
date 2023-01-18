@@ -232,6 +232,43 @@ public class ReservationServiceImplementation implements ReservationService {
     }
 
     @Override
+    public ReservationDto reserveVehicle(ReservationCreateDto reservationCreateDto) {
+        LocalDate start_date = reservationCreateDto.getStarting_date();
+        LocalDate end_date = reservationCreateDto.getEnding_date();
+
+        int user_discount = getDiscountByUserId(reservationCreateDto.getUser_id());
+
+        Vehicle vehicle = vehicleRepository
+                .findById(reservationCreateDto.getVehicle_id())
+                .orElseThrow(() -> new NotFoundException(String.format("Vehicle with id %d cannot be found", reservationCreateDto.getVehicle_id())));
+
+        double total_price = 0.0;
+        double per_day = vehicle.getModel().getPrice();
+        long datesDiff = ChronoUnit.DAYS.between(start_date, end_date);
+
+        if(user_discount != 0){
+            total_price = ((100 - user_discount) * per_day * datesDiff) / 100;
+        }else{
+            total_price = per_day * datesDiff;
+        }
+
+        Company company = vehicle.getCompany();
+
+        Reservation reservation = new Reservation();
+        reservation.setUser_id(reservationCreateDto.getUser_id());
+        reservation.setCompany(company);
+        reservation.setVehicle(vehicle);
+        reservation.setIs_active(1);
+        reservation.setStarting_date(start_date);
+        reservation.setEnding_date(end_date);
+        reservation.setTotal_price(total_price);
+
+        callIncrease(reservationCreateDto.getUser_id());
+
+        return reservationMapper.reservationToReservationDto(reservationRepository.save(reservation));
+    }
+
+    @Override
     public ReservationDto createReservationByType(ReservationCreateByTypeDto reservationCreateByTypeDto) {
 
         /** FUNKCIJA KOJA TREBA DA SE ZAVRSI
@@ -390,6 +427,7 @@ public class ReservationServiceImplementation implements ReservationService {
         return resultDtos;
     }
 
+    @Override
     public List<VehicleDto> listAvailableVehiclesNew(LocalDate startDate, LocalDate endDate){
         List<Vehicle> vehiclesResultSet = vehicleRepository.findAll();
         List<Reservation> reservationsResultSet = reservationRepository.findAll();

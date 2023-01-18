@@ -17,8 +17,10 @@ public interface ReservationService {
 
     ReservationDto createReservationByType(ReservationCreateByTypeDto reservationCreateByTypeDto);
     ReservationDto createReservationByModel(ReservationCreateByModelDto reservationCreateByModelDto);
+    ReservationDto reserveVehicle(ReservationCreateDto reservationCreateDto);
 
     ReservationDto cancelReservation(Long reservation_id);
 
     List<VehicleDto> listAvailableVehicles();
+    List<VehicleDto> listAvailableVehiclesNew(LocalDate startDate, LocalDate endDate);
 }
