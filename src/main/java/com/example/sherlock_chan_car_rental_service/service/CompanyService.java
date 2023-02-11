@@ -14,7 +14,9 @@ public interface CompanyService {
 
     CompanyDto updateCompany(Long id, CompanyUpdateDto companyUpdateDto);
     CompanyDto createCompany(CompanyCreateDto companyCreateDto);
-
+    
+    CompanyDto findCompanyByName(String name);
+    
     CompanyDto deleteCompany(Long id);
 }
 

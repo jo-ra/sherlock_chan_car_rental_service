@@ -11,7 +11,8 @@ public class UserServiceConfiguration {
     @Bean
     public RestTemplate userServiceRestTemplate(){
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory("http://localhost:31337/api"));
+//        restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory("http://localhost:31337/api"));
+        restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory("http://localhost:1312/rental-user-service/api"));
         return restTemplate;
     }
 }

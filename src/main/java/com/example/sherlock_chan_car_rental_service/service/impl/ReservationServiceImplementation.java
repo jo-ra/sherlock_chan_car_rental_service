@@ -4,7 +4,11 @@ import com.example.sherlock_chan_car_rental_service.domain.Company;
 import com.example.sherlock_chan_car_rental_service.domain.Reservation;
 import com.example.sherlock_chan_car_rental_service.domain.Vehicle;
 import com.example.sherlock_chan_car_rental_service.dto.*;
+import com.example.sherlock_chan_car_rental_service.dto.mailDtos.ReservationCancelMailDto;
+import com.example.sherlock_chan_car_rental_service.dto.mailDtos.ReservationMailDto;
+import com.example.sherlock_chan_car_rental_service.dto.mailDtos.ReservationReminderDto;
 import com.example.sherlock_chan_car_rental_service.exception.NotFoundException;
+import com.example.sherlock_chan_car_rental_service.listener.helper.MessageHelper;
 import com.example.sherlock_chan_car_rental_service.mapper.CompanyMapper;
 import com.example.sherlock_chan_car_rental_service.mapper.ModelMapper;
 import com.example.sherlock_chan_car_rental_service.mapper.ReservationMapper;
@@ -15,12 +19,18 @@ import com.example.sherlock_chan_car_rental_service.repository.VehicleRepository
 import com.example.sherlock_chan_car_rental_service.service.ReservationService;
 import com.example.sherlock_chan_car_rental_service.user_service.dtos.ClientDto;
 import com.example.sherlock_chan_car_rental_service.user_service.dtos.DiscountDto;
+import com.example.sherlock_chan_car_rental_service.user_service.dtos.UserDto;
+import io.github.resilience4j.retry.Retry;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -41,17 +51,26 @@ public class ReservationServiceImplementation implements ReservationService {
     private ReservationMapper reservationMapper;
     private VehicleMapper vehicleMapper;
     private CompanyMapper companyMapper;
-
     private ReservationRepository reservationRepository;
     private CompanyRepository companyRepository;
     private VehicleRepository vehicleRepository;
-
     private RestTemplate userServiceRestTemplate;
+    private Retry userServiceRetry;
+
+    private JmsTemplate jmsTemplate;
+    private String createReservationDest;
+    private String cancelReservationDest;
+    private String notifyCustomerDest;
+    private MessageHelper messageHelper;
 
     public ReservationServiceImplementation(ReservationMapper reservationMapper, CompanyRepository companyRepository,
                                             ReservationRepository reservationRepository, VehicleRepository vehicleRepository,
                                             VehicleMapper vehicleMapper, RestTemplate userServiceRestTemplate,
-                                            CompanyMapper companyMapper){
+                                            CompanyMapper companyMapper, JmsTemplate jmsTemplate,
+                                            @Value("${destination.reservation_create}") String createReservationDest,
+                                            @Value("${destination.cancel_reservation}") String cancelReservationDest,
+                                            @Value("${destination.notify_customer_new}") String notifyCustomerDest,
+                                            MessageHelper messageHelper, Retry userServiceRetry){
         this.reservationMapper = reservationMapper;
         this.companyRepository=companyRepository;
         this.reservationRepository = reservationRepository;
@@ -59,6 +78,12 @@ public class ReservationServiceImplementation implements ReservationService {
         this.vehicleMapper = vehicleMapper;
         this.userServiceRestTemplate = userServiceRestTemplate;
         this.companyMapper = companyMapper;
+        this.jmsTemplate = jmsTemplate;
+        this.createReservationDest = createReservationDest;
+        this.messageHelper = messageHelper;
+        this.cancelReservationDest = cancelReservationDest;
+        this.notifyCustomerDest = notifyCustomerDest;
+        this.userServiceRetry = userServiceRetry;
     }
 
     @Override
@@ -176,7 +201,9 @@ public class ReservationServiceImplementation implements ReservationService {
 
         System.out.println("USER ID " + reservationCreateByModelDto.getUser_id());
 
-        int user_discount = getDiscountByUserId(reservationCreateByModelDto.getUser_id());
+//        int user_discount = getDiscountByUserId(reservationCreateByModelDto.getUser_id());
+
+        int user_discount = Retry.decorateSupplier(userServiceRetry, () -> getDiscountByUserId(reservationCreateByModelDto.getUser_id())).get();
 
         List<Vehicle> availableVehicles = listAvailableVehiclesNew(start_date, end_date)
                 .stream()
@@ -236,7 +263,8 @@ public class ReservationServiceImplementation implements ReservationService {
         LocalDate start_date = reservationCreateDto.getStarting_date();
         LocalDate end_date = reservationCreateDto.getEnding_date();
 
-        int user_discount = getDiscountByUserId(reservationCreateDto.getUser_id());
+//        int user_discount = getDiscountByUserId(reservationCreateDto.getUser_id());
+        int user_discount = Retry.decorateSupplier(userServiceRetry, () -> getDiscountByUserId(reservationCreateDto.getUser_id())).get();
 
         Vehicle vehicle = vehicleRepository
                 .findById(reservationCreateDto.getVehicle_id())
@@ -264,8 +292,37 @@ public class ReservationServiceImplementation implements ReservationService {
         reservation.setTotal_price(total_price);
 
         callIncrease(reservationCreateDto.getUser_id());
+//        UserDto uDto = getUserById(reservationCreateDto.getUser_id());
+        UserDto uDto = Retry.decorateSupplier(userServiceRetry, ()->getUserById(reservationCreateDto.getUser_id())).get();
+        System.out.println("Company id " + company.getId());
+//        UserDto mDto = getManagerById(company.getId());
+        UserDto mDto = Retry.decorateSupplier(userServiceRetry, ()->getManagerById(company.getId())).get();
 
-        return reservationMapper.reservationToReservationDto(reservationRepository.save(reservation));
+        if(uDto == null || mDto == null)
+            return new ReservationDto();
+
+        reservationRepository.save(reservation);
+
+        System.out.println("Manager name " + mDto.getFirst_name());
+
+        ReservationMailDto reservationMailDto = new ReservationMailDto();
+        String vehicleName = vehicle.getModel().getName() + " " + vehicle.getType().getName();
+        reservationMailDto.setVehicle(vehicleName);
+        reservationMailDto.setStart_date(start_date);
+        reservationMailDto.setEnd_date(end_date);
+        reservationMailDto.setDiscount(user_discount);
+        reservationMailDto.setTotal_price(total_price);
+        reservationMailDto.setCompany_name(company.getName());
+        reservationMailDto.setFirstName(uDto.getFirst_name());
+        reservationMailDto.setLast_name(uDto.getLast_name());
+        reservationMailDto.setEmail(uDto.getEmail());
+
+        reservationMailDto.setCompany_manager_name(mDto.getFirst_name());
+        reservationMailDto.setCompany_manager_lastname(mDto.getLast_name());
+        reservationMailDto.setCompany_manager_email(mDto.getEmail());
+
+        jmsTemplate.convertAndSend(createReservationDest, messageHelper.createTextMessage(reservationMailDto));
+        return reservationMapper.reservationToReservationDto(reservation);
     }
 
     @Override
@@ -286,7 +343,9 @@ public class ReservationServiceImplementation implements ReservationService {
 
 //        System.out.println("USER ID " + reservationCreateDto.getUser_id());
 
-        int user_discount = getDiscountByUserId(reservationCreateByTypeDto.getUser_id());
+//        int user_discount = getDiscountByUserId(reservationCreateByTypeDto.getUser_id());
+
+        int user_discount = Retry.decorateSupplier(userServiceRetry, () -> getDiscountByUserId(reservationCreateByTypeDto.getUser_id())).get();
 
         List<Vehicle> availableVehicles = listAvailableVehiclesNew(start_date, end_date)
                 .stream()
@@ -354,9 +413,30 @@ public class ReservationServiceImplementation implements ReservationService {
 
         System.out.println(reservation.getId());
 
-        reservationRepository.delete(reservation);
+        Vehicle vehicle = reservation.getVehicle();
+        Company company = reservation.getCompany();
+//        UserDto userDto = getUserById(reservation.getUser_id());
+        UserDto userDto = Retry.decorateSupplier(userServiceRetry, () -> getUserById(reservation.getUser_id())).get();
+//        UserDto managerDto = getManagerById(company.getId());
+        UserDto managerDto = Retry.decorateSupplier(userServiceRetry, () -> getUserById(reservation.getUser_id())).get();
 
+        if(userDto == null || managerDto == null)
+            return new ReservationDto();
+
+        ReservationCancelMailDto reservationCancelMailDto = new ReservationCancelMailDto();
+        reservationCancelMailDto.setManager_email(managerDto.getEmail());
+        reservationCancelMailDto.setManager_name(managerDto.getFirst_name());
+        reservationCancelMailDto.setVehicle_name(vehicle.getModel().getName() + " " + vehicle.getType().getName());
+        reservationCancelMailDto.setStart_date(reservation.getStarting_date());
+        reservationCancelMailDto.setEnd_date(reservation.getEnding_date());
+        reservationCancelMailDto.setUser_email(userDto.getEmail());
+        reservationCancelMailDto.setUser_name(userDto.getFirst_name());
+        reservationCancelMailDto.setUser_last_name(userDto.getLast_name());
+
+        reservationRepository.delete(reservation);
         callDecrease(reservation.getUser_id());
+
+        jmsTemplate.convertAndSend(cancelReservationDest, messageHelper.createTextMessage(reservationCancelMailDto));
 
         return reservationMapper.reservationToReservationDto(reservation);
     }
@@ -388,7 +468,7 @@ public class ReservationServiceImplementation implements ReservationService {
         }
     }
 
-    private int getDiscountByUserId(Long user_id){
+    private int getDiscountByUserId(Long user_id) {
         System.out.println(user_id);
         ResponseEntity<DiscountDto> discountResponseEntity = null;
         try{
@@ -401,9 +481,64 @@ public class ReservationServiceImplementation implements ReservationService {
             e.printStackTrace();
         }
 
+        if(discountResponseEntity.getBody().getDiscount() == null){
+            return 0;
+        }
+
         return discountResponseEntity.getBody().getDiscount();
     }
 
+    private UserDto getManagerById(Long company_id){
+        ResponseEntity<UserDto> userDtoResponseEntity = null;
+
+        try{
+            userDtoResponseEntity = userServiceRestTemplate.exchange("/user/findManager/" + company_id, HttpMethod.GET, null, UserDto.class);
+        }catch (HttpClientErrorException e){
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)){
+                throw new NotFoundException(String.format("Manager with company id %d not found", company_id));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        if(userDtoResponseEntity != null){
+            UserDto userDto = new UserDto();
+            userDto.setId(userDtoResponseEntity.getBody().getId());
+            userDto.setEmail(userDtoResponseEntity.getBody().getEmail());
+            userDto.setFirst_name(userDtoResponseEntity.getBody().getFirst_name());
+            userDto.setLast_name(userDtoResponseEntity.getBody().getLast_name());
+            userDto.setUsername(userDtoResponseEntity.getBody().getUsername());
+            return userDto;
+        }
+
+        return null;
+    }
+
+    private UserDto getUserById(Long user_id){
+        ResponseEntity<UserDto> userDtoResponseEntity = null;
+
+        try{
+            userDtoResponseEntity = userServiceRestTemplate.exchange("/user/findUserById/" + user_id, HttpMethod.GET, null, UserDto.class);
+        }catch (HttpClientErrorException e){
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)){
+                throw new NotFoundException(String.format("User with id %d not found", user_id));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        if(userDtoResponseEntity != null){
+            UserDto userDto = new UserDto();
+            userDto.setId(userDtoResponseEntity.getBody().getId());
+            userDto.setEmail(userDtoResponseEntity.getBody().getEmail());
+            userDto.setFirst_name(userDtoResponseEntity.getBody().getFirst_name());
+            userDto.setLast_name(userDtoResponseEntity.getBody().getLast_name());
+            userDto.setUsername(userDtoResponseEntity.getBody().getUsername());
+            return userDto;
+        }
+
+        return null;
+    }
 
     public List<VehicleDto> listAvailableVehicles(){
         List<Vehicle> vehiclesResultSet = vehicleRepository.findAll();
@@ -452,5 +587,39 @@ public class ReservationServiceImplementation implements ReservationService {
             return true;
         }
         return false;
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    private void checkReservations(){
+        List<Reservation> reservations = reservationRepository.findAll();
+        List<Reservation> reservationsToNotify = new ArrayList<>();
+
+        LocalDate current_date = LocalDate.now();
+
+        for(Reservation reservation : reservations){
+            long datesDiff = ChronoUnit.DAYS.between(current_date, reservation.getStarting_date());
+            System.out.println(datesDiff);
+            if(datesDiff <= 3){
+                reservationsToNotify.add(reservation);
+            }
+        }
+
+        for(Reservation reservation : reservationsToNotify){
+            ReservationReminderDto reservationReminderDto = new ReservationReminderDto();
+//            UserDto userDto = getUserById(reservation.getUser_id());
+            UserDto userDto = Retry.decorateSupplier(userServiceRetry, () -> getUserById(reservation.getUser_id())).get();
+
+            System.out.println(userDto.getEmail());
+
+            if(userDto == null)
+                continue;
+
+            reservationReminderDto.setCustomerEmail(userDto.getEmail());
+            reservationReminderDto.setCustomerName(userDto.getFirst_name());
+            reservationReminderDto.setVehicleToReserve(reservation.getVehicle().getModel().getName() + " " + reservation.getVehicle().getType().getName());
+            reservationReminderDto.setDaysLeft((int) ChronoUnit.DAYS.between(reservation.getStarting_date(), LocalDate.now()));
+
+            jmsTemplate.convertAndSend(notifyCustomerDest, messageHelper.createTextMessage(reservationReminderDto));
+        }
     }
 }

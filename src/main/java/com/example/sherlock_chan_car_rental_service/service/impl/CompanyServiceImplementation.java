@@ -14,6 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CompanyServiceImplementation implements CompanyService {
 
@@ -76,5 +80,25 @@ public class CompanyServiceImplementation implements CompanyService {
         companyRepository.delete(company);
 
         return companyMapper.companyToCompanyDto(company);
+    }
+
+    @Override
+    public CompanyDto findCompanyByName(String name) {
+
+        List<Company> companyList = new ArrayList<>();
+        companyList = companyRepository.findAll();
+
+        Company companyret = null;
+
+        for(Company company : companyList){
+            if(company.getName().equals(name)){
+                companyret = company;
+            }
+        }
+
+        if(companyret == null)
+            return new CompanyDto();
+
+        return companyMapper.companyToCompanyDto(companyret);
     }
 }

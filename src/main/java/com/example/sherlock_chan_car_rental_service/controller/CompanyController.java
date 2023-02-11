@@ -50,6 +50,11 @@ public class CompanyController {
         return new ResponseEntity<>(companyService.findById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/findByName/{name}")
+    public ResponseEntity<CompanyDto> findById(@PathVariable("name") String name) {
+        return new ResponseEntity<>(companyService.findCompanyByName(name), HttpStatus.OK);
+    }
+
     @PutMapping("/updateCompany/{id}")
     @CheckSecurity(userTypes = {"Manager"})
     public ResponseEntity<CompanyDto> updateCompany(@RequestHeader("Authorization") String authorization,
